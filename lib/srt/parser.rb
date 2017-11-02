@@ -1,12 +1,17 @@
 module SRT
+  class ParserError < StandardError; end
   class Parser
     class << self
-      def timecode_string_to_ms(timecode_string)
-        timecode = timecode_string.match(/(?<h>\d+):(?<m>\d+):(?<s>\d+)[,.]?(?<ms>\d+)?/)
-        minutes = timecode['h'].to_i * 60 +  timecode['m'].to_i
-        seconds = minutes * 60 + timecode['s'].to_i
-        seconds * 1000 + timecode['ms'].to_i
+      def timecode_to_ms(timecode_string)
+        if /(?<hours>\d+):(?<minutes>\d+):(?<seconds>\d+)[,.]?(?<miliseconds>\d+)?/ =~ timecode_string
+          subtotal_minutes = hours.to_i * 60 +  minutes.to_i
+          subtotal_seconds = subtotal_minutes * 60 + seconds.to_i
+          subtotal_seconds * 1000 + miliseconds.to_i
+        else
+          raise ParserError, "Failed to parse this timecode: #{timecode_string}"
+        end
       end
+
     end
 
   end
