@@ -1,31 +1,26 @@
 require_relative './parser'
-require 'charguess'
+require 'charlock_holmes'
 
 module SRT
   class Load
     def initialize(spanish_srt_filename: , english_srt_filename:)
       File.file?(spanish_srt_filename) || raise(LoadError, "no such file to load -- #{spanish_srt_filename}")
       File.file?(english_srt_filename) || raise(LoadError, "no such file to load -- #{english_srt_filename}")
-      puts combine_into_memory(load_into_hash(spanish_srt_filename, language: 'es'),
-                          load_into_hash(english_srt_filename, language: 'en'))
+
+      es_hash = parse_into_hash(File.read(spanish_srt_filename), language: 'es')
+      en_hash = parse_into_hash(File.read(english_srt_filename), language: 'en')
     end
 
-    def combine_into_memory(es_hash, en_hash)
-      keys = [es_hash, en_hash].flat_map(&:keys).uniq.sort
-      
-    end
+    def parse_into_hash(filecontent, language:)
+      raise(ArgumentError, "language: keyword param only accepts either 'es' or 'en'") unless %w(es en).include?(language)
 
-    # Refactor, to first convert the file to UTF-8 if necessary, and then use it from memory
-    def load_into_hash(filename, language:)
+      utf8_filecontent = transcode_to_utf8(filecontent)
+
+
       h = {}
-
-      # we indicate that we read by paragraph separator "\r\n\r\n"
-      encoding =  CharGuess.guess(IO.read(filename))
-      File.read(filename, encoding: encoding).each_line("\r\n\r\n") do |paragraph|
-        paragraph.encode!("UTF-8", encoding) if encoding != "UTF-8"
-
-        # "346\r\n00:39:29,491 --> 00:39:32,559\r\nThat was \r\n a long time ago.\r\n\r\n"
-        paragraph_id, timecode_and_span, *text = paragraph.split("\r\n")
+      utf8_filecontent.each_line("\n\n") do |paragraph|
+        # "346\r\n00:39:29,491 --> 00:39:32,559\nThat was \n a long time ago.\n\n"
+        paragraph_id, timecode_and_span, *text = paragraph.split("\n")
         next if paragraph_id.to_i == 0
         # 00:39:29,491 --> 00:39:32,559
         timecode, timespan = timecode_and_span.split(" --> ")
@@ -37,6 +32,14 @@ module SRT
         h[timecode_in_ms] = attrs
       end
       h
+    end
+
+    private
+
+    def transcode_to_utf8(filecontent)
+      detection = CharlockHolmes::EncodingDetector.detect(filecontent)
+      content_transcoded = CharlockHolmes::Converter.convert filecontent, detection[:encoding], 'UTF-8'
+      content_transcoded.encode(universal_newline: true) # to have consistent newline format for parsing by paragraph
     end
 
   end

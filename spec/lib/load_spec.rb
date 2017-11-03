@@ -18,4 +18,33 @@ describe SRT::Load do
                                   english_srt_filename: ENGLISH_SRT_FILENAME) }.to raise_exception(LoadError)
     end
   end
+
+  context 'when valid files are passed' do
+    let(:filecontent_ISO_8859_1) { "2\r\n00:00:03,357 --> 00:00:06,558\r\nY en este d\xEDa, comenzamos\r\na reorganizar este mundo.\r\n\r\n3\r\n00:00:10,297 --> 00:00:13,665\r\nTodos podr\xE1n vivir si\r\nse rinden ahora mismo.\r\n\r\n"}
+    let(:filecontent_UTF_8) {      "2\n00:00:03,357 --> 00:00:06,558\nY en este día, comenzamos\na reorganizar este mundo.\n\n3\n00:00:10,297 --> 00:00:13,665\nTodos podrán vivir si\nse rinden ahora mismo.\n\n"}
+    let(:srt_load_instance) { described_class.new(spanish_srt_filename: SPANISH_SRT_FILENAME,
+                                                  english_srt_filename: ENGLISH_SRT_FILENAME) }
+
+    describe "#transcode_to_utf8" do
+      it "transform a non UTF-8 to UTF-8 and univeral newline" do
+        expect(srt_load_instance.send(:transcode_to_utf8, filecontent_ISO_8859_1)).to eq(filecontent_UTF_8)
+      end
+    end
+
+    describe "#parse_into_hash" do
+      it "generates a UTF-8 hash of hashes where every value is from a string paragraph" do
+        expect(srt_load_instance.parse_into_hash(filecontent_ISO_8859_1, language: 'es')).to eq({
+            3357 => {:timecode=>"00:00:03,357", :timespan=>"00:00:06,558", :paragraph_id_es=>2, :text_es=>["Y en este día, comenzamos", "a reorganizar este mundo."]},
+           10297 => {:timecode=>"00:00:10,297", :timespan=>"00:00:13,665", :paragraph_id_es=>3, :text_es=>["Todos podrán vivir si", "se rinden ahora mismo."]}
+
+        })
+      end
+
+      it "raises when language keword is neither 'es' nor 'en'" do
+        expect { srt_load_instance.parse_into_hash(filecontent_ISO_8859_1, language: 'fr') }.to raise_exception(ArgumentError)
+      end
+    end
+
+  end
+
 end
