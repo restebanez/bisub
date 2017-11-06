@@ -18,9 +18,9 @@ module SRT
     end
 
     def merge
-      (@es_hash.keys | @en_hash.keys).inject({}) do |h, k|
-        h[k] = (@es_hash[k] || {}).merge((@en_hash[k] || {}))
-        h
+      # | excluding any duplicates and preserving the order from the given arrays.
+      (@es_hash.keys | @en_hash.keys).sort.inject([]) do |ary, k|
+        ary << (@es_hash[k] || {timecode_not_in_es: true}).merge((@en_hash[k] || {timecode_not_in_en: true}))
       end
     end
 
@@ -29,12 +29,14 @@ module SRT
 
       utf8_filecontent = transcode_to_utf8(filecontent)
 
-
       h = {}
       utf8_filecontent.each_line("\n\n") do |paragraph|
         # "346\r\n00:39:29,491 --> 00:39:32,559\nThat was \n a long time ago.\n\n"
-        paragraph_id, timecode_and_span, *text = paragraph.split("\n")
-        next if paragraph_id.to_i == 0
+        par_id, timecode_and_span, *text = paragraph.split("\n")
+
+        # because of encoding this is the most resilient way to check and extract the sequence id
+        # not sure why but i've seen false true with "1".to_i == 0
+        next unless /(?<paragraph_id>\d+)/ =~ par_id
         # 00:39:29,491 --> 00:39:32,559
         timecode, timespan = timecode_and_span.split(" --> ")
 
