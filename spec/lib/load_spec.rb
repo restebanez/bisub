@@ -45,6 +45,22 @@ describe SRT::Load do
       end
     end
 
+    describe "#combine" do
+      it "generates a merged hash with both subtitles" do
+          expect(described_class.combine(spanish_srt_filename: SPANISH_SRT_FILENAME,
+                                         english_srt_filename: ENGLISH_SRT_FILENAME)[3357]).to eq(
+          {
+            :timecode=>"00:00:03,357",
+            :timespan=>"00:00:06,558",
+            :paragraph_id_es=>2,
+            :text_es=> ["Y en este día, comenzamos", "a reorganizar este mundo."],
+            :paragraph_id_en=>2,
+            :text_en=>["And on this day,", "we begin to reshape this world."]
+          })
+
+      end
+    end
+
   end
 
 end

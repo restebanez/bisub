@@ -7,8 +7,21 @@ module SRT
       File.file?(spanish_srt_filename) || raise(LoadError, "no such file to load -- #{spanish_srt_filename}")
       File.file?(english_srt_filename) || raise(LoadError, "no such file to load -- #{english_srt_filename}")
 
-      es_hash = parse_into_hash(File.read(spanish_srt_filename), language: 'es')
-      en_hash = parse_into_hash(File.read(english_srt_filename), language: 'en')
+      @es_hash = parse_into_hash(File.read(spanish_srt_filename), language: 'es')
+      @en_hash = parse_into_hash(File.read(english_srt_filename), language: 'en')
+      self
+    end
+
+    def self.combine(spanish_srt_filename: , english_srt_filename:)
+      load_instance = self.new(spanish_srt_filename: spanish_srt_filename, english_srt_filename: english_srt_filename)
+      load_instance.merge
+    end
+
+    def merge
+      (@es_hash.keys | @en_hash.keys).inject({}) do |h, k|
+        h[k] = (@es_hash[k] || {}).merge((@en_hash[k] || {}))
+        h
+      end
     end
 
     def parse_into_hash(filecontent, language:)
