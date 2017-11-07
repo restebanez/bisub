@@ -22,7 +22,7 @@ module ENGLISH_LANGUAGE
       txt << "#{infinitive} (v)"
       txt << past_tenses.map { |v| "#{v} (v past)"}
       txt << past_participles.map { |v| "#{v} (v participle)"}
-      txt.flatten.join("\n")
+      txt.flatten.join("\n") + "\n"
     end
 
     # find("bent") -> :past_participle

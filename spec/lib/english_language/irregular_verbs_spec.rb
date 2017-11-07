@@ -33,9 +33,9 @@ describe ENGLISH_LANGUAGE::IrregularVerbs do
 
       describe "#expand" do
         it "expands to all the conjugations of a given infinitive verb" do
-          expect(irregular_verbs_instance.expand("swim")).to eq("swim (v)\nswam (v past)\nswum (v past)\nswum (v participle)")
-          expect(irregular_verbs_instance.expand("will")).to eq("will (v)\nwould (v past)")
-          expect(irregular_verbs_instance.expand("must")).to eq("must (v)")
+          expect(irregular_verbs_instance.expand("swim")).to eq("swim (v)\nswam (v past)\nswum (v past)\nswum (v participle)\n")
+          expect(irregular_verbs_instance.expand("will")).to eq("will (v)\nwould (v past)\n")
+          expect(irregular_verbs_instance.expand("must")).to eq("must (v)\n")
         end
       end
     end
