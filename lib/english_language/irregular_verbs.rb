@@ -16,6 +16,13 @@ module ENGLISH_LANGUAGE
     #                    past: ["bent", "bended"],
     #                    participle: ["bent", "bended"]}
     def expand(infinitive)
+      return nil unless (conjugations = list_by_infinitive[infinitive])
+      txt = []
+      past_tenses, past_participles = conjugations
+      txt << "#{infinitive} (v)"
+      txt << past_tenses.map { |v| "#{v} (v past)"}
+      txt << past_participles.map { |v| "#{v} (v participle)"}
+      txt.flatten.join("\n")
     end
 
     # find("bent") -> :past_participle

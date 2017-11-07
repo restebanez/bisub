@@ -30,6 +30,14 @@ describe ENGLISH_LANGUAGE::IrregularVerbs do
         it { is_expected.to include({"swim" => [["swam", "swum"], ["swum"]] }) }
         it { is_expected.to include({"swink" => [["swank", "swonk", "swinkt", "swinked"], ["swunk", "swunken", "swonken", "swinkt", "swinked"]] }) }
       end
+
+      describe "#expand" do
+        it "expands to all the conjugations of a given infinitive verb" do
+          expect(irregular_verbs_instance.expand("swim")).to eq("swim (v)\nswam (v past)\nswum (v past)\nswum (v participle)")
+          expect(irregular_verbs_instance.expand("will")).to eq("will (v)\nwould (v past)")
+          expect(irregular_verbs_instance.expand("must")).to eq("must (v)")
+        end
+      end
     end
   end
 end
