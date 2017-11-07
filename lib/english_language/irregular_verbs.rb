@@ -31,6 +31,8 @@ module ENGLISH_LANGUAGE
     def parse
       File.open(file_word_list).each_line.each_with_index.map do |line, i|
         if /(?<infinitive>\w+),(?<past_tense_all>[a-z()\/-]+),(?<past_participle_all>[a-z()\/-]+)/ =~ line
+          past_tense_all = '' if past_tense_all == '(none)'
+          past_participle_all = '' if past_participle_all == '(none)'
           [infinitive, past_tense_all.split('/'), past_participle_all.split('/')]
         else
           raise ParserError, "Failed to parse irregular verb on line #{i}: #{line}"

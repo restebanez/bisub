@@ -25,6 +25,8 @@ describe ENGLISH_LANGUAGE::IrregularVerbs do
         subject { irregular_verbs_instance.list_by_infinitive }
 
         it { is_expected.to include({"hurt" => [["hurt"], ["hurt"]] }) }
+        it { is_expected.to include({"must" => [[], []] }) }
+        it { is_expected.to include({"will" => [["would"], []] }) }
         it { is_expected.to include({"swim" => [["swam", "swum"], ["swum"]] }) }
         it { is_expected.to include({"swink" => [["swank", "swonk", "swinkt", "swinked"], ["swunk", "swunken", "swonken", "swinkt", "swinked"]] }) }
       end
