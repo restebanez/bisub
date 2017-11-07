@@ -20,6 +20,14 @@ describe ENGLISH_LANGUAGE::IrregularVerbs do
         it { is_expected.to include(["ake", ["oke"], ["aken"]]) }
         it { is_expected.to include(["bless", ["blessed","blest"], ["blessed","blest"]]) }
       end
+
+      describe "#list_by_infinitive" do
+        subject { irregular_verbs_instance.list_by_infinitive }
+
+        it { is_expected.to include({"hurt" => [["hurt"], ["hurt"]] }) }
+        it { is_expected.to include({"swim" => [["swam", "swum"], ["swum"]] }) }
+        it { is_expected.to include({"swink" => [["swank", "swonk", "swinkt", "swinked"], ["swunk", "swunken", "swonken", "swinkt", "swinked"]] }) }
+      end
     end
   end
 end

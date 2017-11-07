@@ -23,6 +23,11 @@ module ENGLISH_LANGUAGE
     def find(any_verb_form)
     end
 
+    def list_by_infinitive
+      @list ||= parse
+      @list_by_infinitive_cached ||= @list.inject({}) {|h_list, (i,pt,pp)| h_list.merge({i => [pt,pp] }) }
+    end
+
     def parse
       File.open(file_word_list).each_line.each_with_index.map do |line, i|
         if /(?<infinitive>\w+),(?<past_tense_all>[a-z()\/-]+),(?<past_participle_all>[a-z()\/-]+)/ =~ line
