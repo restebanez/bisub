@@ -14,7 +14,7 @@ module ENGLISH_LANGUAGE
 
     def expand(word)
       return nil unless is_a_verb?(word)
-      irregular.expand(word) || ::ENGLISH_LANGUAGE::RegularVerbs.expand(word)
+      irregular.expand(word) || regular.expand(word)
     end
 
     def is_a_verb?(word)
@@ -31,6 +31,12 @@ module ENGLISH_LANGUAGE
       def irregular
         @irregular ||= ::ENGLISH_LANGUAGE::IrregularVerbs.new
       end
+
+      def regular
+        ::ENGLISH_LANGUAGE::RegularVerbs
+      end
+
+
 
   end
 end
