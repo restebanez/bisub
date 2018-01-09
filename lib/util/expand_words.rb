@@ -1,4 +1,4 @@
-require_relative '../english_language/irregular_verbs'
+require_relative '../english_language/verbs'
 
 module UTIL
   class ExpandWords
@@ -7,12 +7,12 @@ module UTIL
     def initialize(file_path)
       File.file?(file_path) || raise(LoadError, "no such file to load -- #{file_path}")
       @file_path = file_path
-      @irregular_verbs_instance = ::ENGLISH_LANGUAGE::IrregularVerbs.new
+      @verbs_instance = ::ENGLISH_LANGUAGE::Verbs.new
     end
 
     def perform
       File.open(file_path).each_line.inject([]) do |acc, line|
-        if result = @irregular_verbs_instance.expand(line.chomp)
+        if result = @verbs_instance.expand(line.chomp)
           acc << result
         else
           acc << line

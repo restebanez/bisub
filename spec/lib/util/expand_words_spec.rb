@@ -24,6 +24,8 @@ describe UTIL::ExpandWords do
 "write
 hello
 build
+pass
+orange
 ")
       @tmp_file.close
     end
@@ -41,6 +43,10 @@ hello
 build (v)
 built (v past)
 built (v participle)
+pass (v)
+passed (v past)
+passed (v participle)
+orange
 ")
     end
 
