@@ -12,9 +12,8 @@ module ENGLISH_LANGUAGE
       @file_word_list = file_word_list
     end
 
-    # it returns a hash {infinitive: "bend",
-    #                    past: ["bent", "bended"],
-    #                    participle: ["bent", "bended"]}
+    # expand("swim")
+    # "swim (v)\nswam (v past)\nswum (v past)\nswum (v participle)\n"
     def expand(infinitive)
       return nil unless (conjugations = list_by_infinitive[infinitive])
       txt = []
