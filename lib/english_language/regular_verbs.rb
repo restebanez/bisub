@@ -5,7 +5,8 @@ module ENGLISH_LANGUAGE
       # expand("walk") => "walk (v)\nwalked (v past)\nwalked (v participle)\n"
       def expand(regular_verb)
         raise(ArgumentError, "regular_verb param has to be word") unless regular_verb =~ /[a-z]{2,}/
-        "#{regular_verb} (v)\n#{regular_verb}ed (v past)\n#{regular_verb}ed (v participle)\n"
+        suffix = regular_verb.match(/e$/) ? "d" : "ed"
+        "#{regular_verb} (v)\n#{regular_verb}#{suffix} (v past)\n#{regular_verb}#{suffix} (v participle)\n"
       end
     end
   end
